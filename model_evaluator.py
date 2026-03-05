@@ -29,7 +29,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch.nn.functional import softmax
 
-USE_CUDA = torch.cuda.is_available
+USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device("cuda" if USE_CUDA else "cpu")
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -60,7 +60,18 @@ def receive_args() -> argparse.Namespace:
         default="",
         help="the name to save the test result",
     )
-
+    parser.add_argument(
+        "--seqs",
+        type=str,
+        default="",
+        help="path to the sequences file",
+    )
+    parser.add_argument(
+        "--muts",
+        type=str,
+        default="",
+        help="path to the mutations file",
+    )
     return parser.parse_args()
 
 
@@ -84,6 +95,8 @@ class Evaluator:
         epoch_num: int,
         save_name: str = "",
         logger=Logger(__name__),
+        seqs_path: str = None,
+        muts: str = None,
     ):
         self.logger = logger
         if model_name:
@@ -96,7 +109,8 @@ class Evaluator:
             logger.info("#Error: Model directory not found")
             sys.exit(1)
 
-        self.eval_dir = os.path.join(self.model_dir, "EVAL")
+        self.eval_dir = f'{os.getcwd()}/"EVAL"'
+        self.muts = muts
         if save_name:
             self.eval_dir = os.path.join(self.eval_dir, save_name)
         if os.path.exists(self.eval_dir):
@@ -111,6 +125,7 @@ class Evaluator:
             win_size,
             self.msa_aa_size,
             logger,
+            seqs_path
         )
         self.model_type = config.ARCHITECTURES.MODEL_TYPE
         if self.model_type == "SingleTask":
@@ -328,7 +343,7 @@ class Evaluator:
             # Load model parameter
             self.logger.info("...Loading model...")
             self.model.load_state_dict(
-                torch.load(os.path.join(self.model_dir, f"{self.model_epoch}.pt"))
+                torch.load(os.path.join(self.model_dir, f"{self.model_epoch}.pt"), map_location=torch.device(DEVICE))
             )
 
         # Get test dataset and ID mapping dictionary
@@ -338,7 +353,7 @@ class Evaluator:
             )
             return dict()
 
-        test_hgvsp_path = self.test_data[self.test_name]
+        test_hgvsp_path = muts if muts else self.test_data[self.test_name]
         test_dataset, mapping_dict = self.load_test_dataset(
             test_hgvsp_path=test_hgvsp_path,
         )
@@ -372,7 +387,7 @@ if __name__ == "__main__":
     LOGGER.info(ARGS)
 
     model_evaluator = Evaluator(
-        CONFIG, ARGS.model_name, ARGS.epoch_num, ARGS.save_name, LOGGER
+        CONFIG, ARGS.model_name, ARGS.epoch_num, ARGS.save_name, LOGGER, ARGS.seqs, ATGS.muts
     )
     LOGGER.info("...Evaluation start...")
 

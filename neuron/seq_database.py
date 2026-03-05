@@ -30,12 +30,12 @@ class SeqDatabase:
 
     order_to_outcome_category = {val: key for key, val in outcome_category_to_order.items()}
 
-    def __init__(self) -> None:
+    def __init__(self, sequences = None) -> None:
         self._clear_and_init_memory()
         self.config = get_config()
         self.data_root = Path(__file__).parent.parent.resolve()
         self.sequences = self.load_sequences(
-            seq_path=self.data_root / self.config.SEQUENCES
+            seq_path=self.data_root / self.config.SEQUENCES if not sequences else sequences
         )
 
     def load_sequences(self, seq_path: Path, delim: str = "\t") -> Dict[str, str]:

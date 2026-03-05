@@ -17,7 +17,7 @@ import torch
 from torch import tensor
 from torch.utils.data import Dataset
 
-USE_CUDA = torch.cuda.is_available
+USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device("cuda" if USE_CUDA else "cpu")
 
 

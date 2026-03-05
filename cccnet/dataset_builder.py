@@ -43,9 +43,10 @@ class Builder:
         win_size: int,
         msa_aa_size: int,
         logger=Logger(__name__),
+        seqs_path = None
     ):
         self.logger = logger
-        self.sequence_db = SeqDatabase()
+        self.sequence_db = SeqDatabase(seqs_path)
         self.win_size = win_size
         self.msa_aa_size = msa_aa_size
         self.used_featurizer = ThreeCNetProteinSeqFeaturizer(
