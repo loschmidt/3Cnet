@@ -353,7 +353,7 @@ class Evaluator:
             )
             return dict()
 
-        test_hgvsp_path = muts if muts else self.test_data[self.test_name]
+        test_hgvsp_path = self.muts if self.muts else self.test_data[self.test_name]
         test_dataset, mapping_dict = self.load_test_dataset(
             test_hgvsp_path=test_hgvsp_path,
         )
@@ -387,7 +387,7 @@ if __name__ == "__main__":
     LOGGER.info(ARGS)
 
     model_evaluator = Evaluator(
-        CONFIG, ARGS.model_name, ARGS.epoch_num, ARGS.save_name, LOGGER, ARGS.seqs, ATGS.muts
+        CONFIG, ARGS.model_name, ARGS.epoch_num, ARGS.save_name, LOGGER, ARGS.seqs, ARGS.muts
     )
     LOGGER.info("...Evaluation start...")
 
