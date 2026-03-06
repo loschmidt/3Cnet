@@ -109,7 +109,7 @@ class Evaluator:
             logger.info("#Error: Model directory not found")
             sys.exit(1)
 
-        self.eval_dir = f'{os.getcwd()}/"EVAL"'
+        self.eval_dir = f'{os.getcwd()}/EVAL'
         self.muts = muts
         if save_name:
             self.eval_dir = os.path.join(self.eval_dir, save_name)

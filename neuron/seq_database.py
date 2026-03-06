@@ -35,7 +35,7 @@ class SeqDatabase:
         self.config = get_config()
         self.data_root = Path(__file__).parent.parent.resolve()
         self.sequences = self.load_sequences(
-            seq_path=self.data_root / self.config.SEQUENCES if not sequences else sequences
+            seq_path=self.data_root / self.config.SEQUENCES if not sequences else Path(sequences)
         )
 
     def load_sequences(self, seq_path: Path, delim: str = "\t") -> Dict[str, str]:
